@@ -1,0 +1,9 @@
+All third-party components are distributed without modification.
+pikepdf source: https://github.com/pikepdf/pikepdf/tree/v10.13.0.post1
+QPDF source: https://github.com/qpdf/qpdf
+Python source: https://www.python.org/downloads/release/python-3109/
+Tk/Tcl source: https://www.tcl.tk/software/tcltk/
+tkinterdnd2 and tkdnd: https://github.com/Eliav2/tkinterdnd2
+Pillow: https://github.com/python-pillow/Pillow
+lxml: https://github.com/lxml/lxml
+PyInstaller: https://github.com/pyinstaller/pyinstaller
