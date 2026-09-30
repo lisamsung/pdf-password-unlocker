@@ -217,7 +217,8 @@ class DesktopTests(unittest.TestCase):
     def test_output_picker_accessible_on_short_screens(self):
         from app import TkinterDnD, UnlockApp, enable_dpi
         enable_dpi()
-        for width, height, dpi in [(1366, 768, 96), (1920, 1080, 144), (1920, 1080, 192)]:
+        for width, height, dpi in [(1366, 768, 96), (1920, 1080, 144), (1920, 1080, 192),
+                                  (1024, 768, 192)]:
             with self.subTest(screen=(width, height), dpi=dpi):
                 root = TkinterDnD.Tk()
                 root.tk.call('tk', 'scaling', dpi / 72)
@@ -267,6 +268,8 @@ class DesktopTests(unittest.TestCase):
             with self.subTest(dpi=dpi):
                 root = TkinterDnD.Tk()
                 root.tk.call('tk', 'scaling', dpi / 72)
+                root.winfo_screenwidth = lambda: 1024
+                root.winfo_screenheight = lambda: 768
                 app = UnlockApp(root)
                 root.update()
                 try:

@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import ctypes
 import json
-import math
 import os
 import queue
 import sys
@@ -60,7 +59,7 @@ class SettingsPane(tk.Frame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.canvas = tk.Canvas(self, bg=BG, width=300, height=1,
-                                highlightthickness=0, yscrollincrement=24)
+                                highlightthickness=0, yscrollincrement=1)
         self.canvas.grid(row=0, column=0, sticky='nsew')
         self.scrollbar = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.scrollbar.grid(row=0, column=1, sticky='ns')
@@ -98,7 +97,9 @@ class SettingsPane(tk.Frame):
     def mousewheel(self, event):
         if not self.contains(event.widget) or not event.delta:
             return None
-        steps = max(1, abs(event.delta) // 120)
+        # Keep wheel movement comfortable while focus scrolling uses exact pixels.
+        pixels_per_notch = max(1, round(self.winfo_fpixels('1i') / 4))
+        steps = max(1, abs(event.delta) // 120) * pixels_per_notch
         self.canvas.yview_scroll(-steps if event.delta > 0 else steps, 'units')
         return 'break'
 
@@ -119,9 +120,6 @@ class SettingsPane(tk.Frame):
         region = self.canvas.bbox('all')
         if delta and region and region[3]:
             target = self.canvas.canvasy(0) + delta
-            step = int(self.canvas.cget('yscrollincrement')) or 1
-            # Round toward visibility; Canvas otherwise snaps back by part of a step.
-            target = (math.ceil(target / step) if delta > 0 else math.floor(target / step)) * step
             self.canvas.yview_moveto(max(0, target) / region[3])
 
     def destroy(self):
@@ -148,11 +146,11 @@ class UnlockApp:
         self.status = tk.StringVar(value='选择 PDF，输入已知密码，即可开始。')
         self.controls: list[tk.Widget] = []
 
-        root.title('PDF 密码解除器 · v1.1')
+        root.title('PDF 密码解除器 · v1.1.1')
         root.configure(bg=BG)
         self.dpi_scale = root.winfo_fpixels('1i') / 96
         width = min(self.px(1080), root.winfo_screenwidth() - self.px(60))
-        height = min(self.px(800), root.winfo_screenheight() - self.px(95))
+        height = min(self.px(800), root.winfo_screenheight() - self.px(80))
         root.geometry(f'{width}x{height}')
         root.minsize(min(self.px(940), width), min(self.px(740), height))
         root.protocol('WM_DELETE_WINDOW', self.close)
@@ -185,7 +183,7 @@ class UnlockApp:
             return result[0] if len(result) == 1 else result
         for widget in parent.winfo_children():
             keys = widget.keys()
-            for name in ('padx', 'pady', 'highlightthickness', 'borderwidth', 'wraplength', 'yscrollincrement'):
+            for name in ('padx', 'pady', 'highlightthickness', 'borderwidth', 'wraplength'):
                 if name in keys:
                     widget.configure(**{name: scaled(widget.cget(name))})
             if isinstance(widget, (tk.Canvas, tk.Frame)):

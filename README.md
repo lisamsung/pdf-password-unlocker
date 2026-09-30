@@ -67,7 +67,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
 产物为 `dist\PDF密码解除器.exe`。`build.ps1` 保留 UTF-8 BOM，以兼容 Windows PowerShell 5.1。依赖安装需要联网。
 
-GitHub Actions 在 Windows 上运行回归测试与打包检查。发布的 v1.1 程序还完成了独立运行检查，以及解密前后两页内容的像素对比。
+GitHub Actions 在 Windows 上运行回归测试与打包检查。发布程序还完成了独立运行检查，以及解密前后两页内容的像素对比。
 
 ## 代码结构
 
