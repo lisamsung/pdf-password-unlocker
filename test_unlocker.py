@@ -270,10 +270,16 @@ class DesktopTests(unittest.TestCase):
                 app = UnlockApp(root)
                 root.update()
                 try:
-                    for control in (app.start_btn, app.status_label, app.password_entry, app.output_btn):
-                        self.assertGreaterEqual(control.winfo_rooty(), root.winfo_rooty())
-                        self.assertLessEqual(control.winfo_rooty() + control.winfo_height(),
-                                             root.winfo_rooty() + root.winfo_height(), control)
+                    for control in (app.start_btn, app.status_label):
+                        self.assert_visible(control)
+                    # Settings scroll on a short desktop. Verify access to each
+                    # control, rather than requiring them all to fit at once.
+                    app.password_entry.focus_force()
+                    root.update()
+                    self.assert_visible(app.password_entry)
+                    app.output_mode.set('custom')
+                    root.update()
+                    self.assert_visible(app.output_btn)
                     root.geometry(f'{app.px(940)}x{app.px(740)}')
                     root.update()
                     self.assertLessEqual(app.start_btn.winfo_rooty() + app.start_btn.winfo_height(),
